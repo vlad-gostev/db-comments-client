@@ -4,9 +4,13 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 
 import CommentsList from './components/CommentsList'
 import AuthDialog from './components/AuthDialog'
+import useAuth from './hooks/useAuth'
 
 function App() {
   const [showAuthDialog, setShowAuthDialog] = useState(true)
+
+  useAuth()
+
   return (
     <Container>
       <CommentsList />

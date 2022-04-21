@@ -7,19 +7,29 @@ import DeleteCommentDialog from './DeleteCommentDialog'
 
 interface CommentsItemProps {
   isOwn?: boolean
+  item: any
 }
 
 function CommentsItem({
-  isOwn = true,
+  isOwn = false,
+  item,
 }: CommentsItemProps) {
+  const {
+    // id,
+    name,
+    vote,
+    description,
+  } = item
+
+  // const dispatch = useAppDispatch()
   const [enableReply, setEnableReply] = useState(false)
   const [enableEdit, setEnableEdit] = useState(false)
-  const [commentValue, setCommentValue] = useState('12312312')
+  const [descriptionValue, setDescriptionValue] = useState(description)
   const [replyValue, setReplyValue] = useState('')
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
 
   const handleDelete = () => {
-    console.log('delete')
+    // dispatch(deleteComment(id))
     setShowDeleteDialog(false)
   }
 
@@ -30,7 +40,7 @@ function CommentsItem({
           <Badge className="bg-secondary px-1 py-0">
             <Stack>
               {!isOwn && <Button variant="secondary p-1">+</Button>}
-              <div className="p-1">0</div>
+              <div className="p-1">{vote}</div>
               {!isOwn && <Button variant="secondary p-1">-</Button>}
             </Stack>
           </Badge>
@@ -39,7 +49,7 @@ function CommentsItem({
           <Row>
             <Col>
               <span>
-                author
+                {name}
               </span>
               {isOwn && <Badge className="m-2">You</Badge>}
               <span className="m-2 text-secondary">
@@ -68,8 +78,8 @@ function CommentsItem({
           <Row className="mt-1">
             <Col>
               {isOwn && enableEdit
-                ? <Form.Control as="textarea" value={commentValue} rows={3} style={{ resize: 'none' }} onChange={(e) => setCommentValue(e.target?.value)} />
-                : <div>123213</div>}
+                ? <Form.Control as="textarea" value={descriptionValue} rows={3} style={{ resize: 'none' }} onChange={(e) => setDescriptionValue(e.target?.value)} />
+                : <div>{descriptionValue}</div>}
             </Col>
           </Row>
         </Col>

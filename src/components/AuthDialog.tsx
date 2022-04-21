@@ -1,9 +1,18 @@
 import React, { useState } from 'react'
 import { Button, Form, Modal } from 'react-bootstrap'
+import { register } from '../store/auth'
+
+import { useAppDispatch } from '../store/hooks'
 
 enum AuthScreens {
   REGISTER = 'REGISTER',
   LOGIN = 'LOGIN',
+}
+
+type FormField = {
+  label: string
+  type: string
+  id: string
 }
 
 interface AuthDialogProps {
@@ -16,36 +25,37 @@ function AuthDialog({
   onClose,
   show,
 }: AuthDialogProps) {
+  const dispatch = useAppDispatch()
   const [screen, setScreen] = useState(AuthScreens.LOGIN)
 
-  const FormConfig = {
+  const FormConfig: Record<AuthScreens, FormField[]> = {
     [AuthScreens.REGISTER]: [
       {
         label: 'Email address',
         type: 'email',
-        id: 'formBasicEmail',
+        id: 'email',
       },
       {
         label: 'Name',
         type: 'text',
-        id: 'formBasicName',
+        id: 'name',
       },
       {
         label: 'Password',
         type: 'password',
-        id: 'formBasicPassword',
+        id: 'password',
       },
     ],
     [AuthScreens.LOGIN]: [
       {
         label: 'Email address',
         type: 'email',
-        id: 'formBasicEmail',
+        id: 'email',
       },
       {
         label: 'Password',
         type: 'password',
-        id: 'formBasicPassword',
+        id: 'password',
       },
     ],
   }
@@ -60,9 +70,19 @@ function AuthDialog({
       <Modal.Body>
         <Form onSubmit={(event) => {
           event.preventDefault()
-          const { target } = event
-          FormConfig[screen].forEach(({ id }) =>
-            console.log((target as unknown as Record<string, { value: any }>)[id].value))
+          const {
+            email,
+            name,
+            password,
+          } = event.target as EventTarget & Record<string, { value: string }>
+
+          const authData = {
+            email: email.value,
+            name: name.value,
+            password: password.value,
+          }
+
+          dispatch(register(authData))
         }}
         >
           {FormConfig[screen].map(({ label, type, id }) => (
