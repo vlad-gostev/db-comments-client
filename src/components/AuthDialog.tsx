@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
-import { Button, Form, Modal } from 'react-bootstrap'
-import { register } from '../store/auth'
+import {
+  Alert, Button, Form, Modal,
+} from 'react-bootstrap'
+import { getAuthError, register, login } from '../store/auth'
 
-import { useAppDispatch } from '../store/hooks'
+import { useAppDispatch, useAppSelector } from '../store/hooks'
 
 enum AuthScreens {
   REGISTER = 'REGISTER',
@@ -26,6 +28,7 @@ function AuthDialog({
   show,
 }: AuthDialogProps) {
   const dispatch = useAppDispatch()
+  const error = useAppSelector(getAuthError)
   const [screen, setScreen] = useState(AuthScreens.LOGIN)
 
   const FormConfig: Record<AuthScreens, FormField[]> = {
@@ -48,9 +51,9 @@ function AuthDialog({
     ],
     [AuthScreens.LOGIN]: [
       {
-        label: 'Email address',
-        type: 'email',
-        id: 'email',
+        label: 'Name',
+        type: 'text',
+        id: 'name',
       },
       {
         label: 'Password',
@@ -68,6 +71,11 @@ function AuthDialog({
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
+        {error && (
+          <Alert variant="danger">
+            {error}
+          </Alert>
+        )}
         <Form onSubmit={(event) => {
           event.preventDefault()
           const {
@@ -77,12 +85,16 @@ function AuthDialog({
           } = event.target as EventTarget & Record<string, { value: string }>
 
           const authData = {
-            email: email.value,
-            name: name.value,
-            password: password.value,
+            email: email?.value,
+            name: name?.value,
+            password: password?.value,
           }
 
-          dispatch(register(authData))
+          if (screen === AuthScreens.REGISTER) {
+            dispatch(register(authData))
+          } else {
+            dispatch(login(authData))
+          }
         }}
         >
           {FormConfig[screen].map(({ label, type, id }) => (

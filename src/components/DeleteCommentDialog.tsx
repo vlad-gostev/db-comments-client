@@ -2,7 +2,6 @@ import React from 'react'
 import { Button, Modal } from 'react-bootstrap'
 
 interface DeleteCommentDialogProps {
-  // commentId?: string
   show?: boolean
   onClose: () => void
   onDelete: () => void

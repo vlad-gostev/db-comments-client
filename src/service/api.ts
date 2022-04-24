@@ -1,30 +1,30 @@
 import { getCachedToken } from './localStorage'
 
+const UrlApi = 'http://localhost:3001/'
+
 const convertParamsToQuery = (params: Record<string, string>) => Object.entries(params).map(([key, value]) => `${key}=${value}`).join('&')
 
 export default {
+  urlApi: 'http://localhost:3001/',
   requestAPI: async (
     method: string,
-    url: RequestInfo,
-    options?: { body?: Record<string, any>, params?: Record<string, string> },
+    apiRoute: string,
+    options: { body?: Record<string, any>, params?: Record<string, string> } = {},
   ) => {
     const token = getCachedToken()
-    const preparedUrl = options?.params
-      ? `${url}?${convertParamsToQuery(options.params)}`
-      : url
+    const preparedUrl = options.params
+      ? `${UrlApi}${apiRoute}?${convertParamsToQuery(options.params)}`
+      : `${UrlApi}${apiRoute}`
     const response = await fetch(preparedUrl, {
       method,
-      body: options?.body ? JSON.stringify(options.body) : null,
+      body: options.body ? JSON.stringify(options.body) : null,
       headers: {
         'Content-Type': 'application/json',
         'x-access-token': token,
       },
     })
-    if (response.status === 401 || response.status === 403) {
-      // dispatch(logout())
-      throw new Error('Logout')
-    }
+
     const data = await response.json()
-    return data
+    return { data, response }
   },
 }

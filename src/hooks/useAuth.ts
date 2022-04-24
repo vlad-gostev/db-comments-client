@@ -22,11 +22,17 @@ const useAuth = () => {
       return
     }
 
-    localStorage.setItem('cachedCurrentUser', JSON.stringify(currentUser))
-    localStorage.setItem('cachedToken', token || '')
-  }, [currentUser])
+    if (token) {
+      localStorage.setItem('cachedCurrentUser', JSON.stringify(currentUser))
+      localStorage.setItem('cachedToken', token)
+      return
+    }
 
-  return { currentUser }
+    localStorage.removeItem('cachedCurrentUser')
+    localStorage.removeItem('cachedToken')
+  }, [token, currentUser])
+
+  return { token, currentUser }
 }
 
 export default useAuth

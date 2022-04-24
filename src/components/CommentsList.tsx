@@ -21,7 +21,7 @@ function CommentsList() {
     <Stack gap={3} className="my-3">
       {comments.map((comment) => (
         <>
-          <CommentsItem key={comment?.id} item={comment} />
+          <CommentsItem key={comment?.id} item={comment} isMain />
           {comment?.children && (
             <Row>
               <Col sm="auto">
