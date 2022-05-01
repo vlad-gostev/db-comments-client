@@ -7,8 +7,8 @@ import API from '../service/api'
 import { getCachedCurrentUser, getCachedToken } from '../service/localStorage'
 import type { RootState } from './index'
 
-type User = {
-  id?: string
+export type User = {
+  _id?: string
   email?: string
   name: string
   password?: string
@@ -28,7 +28,7 @@ const InitialState: AuthState = {
   currentUser: getCachedCurrentUser(),
 }
 
-const logout = createAction('auth/logout')
+export const logout = createAction('auth/logout')
 
 export const createAuthAsyncThunk = <Returned, ThunkArg = void>(
   typePrefix: string,
@@ -71,8 +71,7 @@ const authReducer = createReducer(InitialState, (builder) => {
       state.token = action.payload.token
       state.currentUser = {
         name: action.payload.name,
-        // eslint-disable-next-line no-underscore-dangle
-        id: action.payload.id,
+        _id: action.payload._id,
       }
     })
     .addCase(login.rejected, (state, action) => {
@@ -87,8 +86,7 @@ const authReducer = createReducer(InitialState, (builder) => {
       state.token = action.payload.token
       state.currentUser = {
         name: action.payload.name,
-        // eslint-disable-next-line no-underscore-dangle
-        id: action.payload.id,
+        _id: action.payload._id,
       }
     })
     .addCase(register.rejected, (state, action) => {
@@ -102,8 +100,7 @@ const authReducer = createReducer(InitialState, (builder) => {
       state.isLoading = false
       state.currentUser = {
         name: action.payload.name,
-        // eslint-disable-next-line no-underscore-dangle
-        id: action.payload.userId,
+        _id: action.payload.userId,
       }
     })
     .addCase(auth.rejected, (state, action) => {

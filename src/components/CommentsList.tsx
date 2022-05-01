@@ -8,6 +8,7 @@ import {
 import CommentsItem from './CommentsItem'
 import { fetchComments, getCommentsList } from '../store/comments'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
+import CommentsAdd from './CommentsAdd'
 
 function CommentsList() {
   const dispatch = useAppDispatch()
@@ -20,24 +21,25 @@ function CommentsList() {
   return (
     <Stack gap={3} className="my-3">
       {comments.map((comment) => (
-        <>
-          <CommentsItem key={comment?.id} item={comment} isMain />
+        <div key={comment?._id}>
+          <CommentsItem item={comment} />
           {comment?.children && (
-            <Row>
+            <Row className="mt-3">
               <Col sm="auto">
                 <div className="bg-primary h-100" style={{ width: 1 }} />
               </Col>
               <Col>
                 <Stack gap={3}>
                   {comment.children.map((child) => (
-                    <CommentsItem key={child?.id} item={child} />
+                    <CommentsItem isChild key={child?._id} item={child} />
                   ))}
                 </Stack>
               </Col>
             </Row>
           )}
-        </>
+        </div>
       ))}
+      <CommentsAdd />
     </Stack>
   )
 }

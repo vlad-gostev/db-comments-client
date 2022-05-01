@@ -7,12 +7,13 @@ import { useAppDispatch } from '../store/hooks'
 
 interface CommentsAddProps {
   parent?: string,
-  onClose: () => void
+  userLabel?: string,
+  onClose?: () => void
 }
 
-function CommentsAdd({ parent = '', onClose }: CommentsAddProps) {
+function CommentsAdd({ parent = '', onClose = () => {}, userLabel }: CommentsAddProps) {
   const dispatch = useAppDispatch()
-  const [description, setDescription] = useState('')
+  const [description, setDescription] = useState(userLabel ? `@${userLabel} ` : '')
 
   const handleAdd = () => {
     onClose()

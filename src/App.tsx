@@ -7,6 +7,7 @@ import CommentsList from './components/CommentsList'
 import AuthDialog from './components/AuthDialog'
 import useAuth from './hooks/useAuth'
 import { getAuthToken } from './store/auth'
+import Header from './components/Header'
 
 function App() {
   const token = useSelector(getAuthToken)
@@ -16,6 +17,7 @@ function App() {
 
   return (
     <Container>
+      <Header />
       <CommentsList />
       <AuthDialog show={!token && showAuthDialog} onClose={() => setShowAuthDialog(false)} />
     </Container>

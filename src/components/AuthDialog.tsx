@@ -98,7 +98,7 @@ function AuthDialog({
         }}
         >
           {FormConfig[screen].map(({ label, type, id }) => (
-            <Form.Group className="mb-3" controlId={id}>
+            <Form.Group key={id} className="mb-3" controlId={id}>
               <Form.Label>{label}</Form.Label>
               <Form.Control type={type} />
             </Form.Group>

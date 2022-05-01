@@ -27,5 +27,6 @@ module.exports = {
   rules: {
     '@typescript-eslint/semi': [2, 'never'],
     'react/require-default-props': 'off',
+    'no-underscore-dangle': 'off'
   },
 };

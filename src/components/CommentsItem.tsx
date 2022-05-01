@@ -1,48 +1,62 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import React, { useState } from 'react'
 import {
   Col, Row, Badge, Button, Stack, Form,
 } from 'react-bootstrap'
-import { useSelector } from 'react-redux'
 
 import CommentsAdd from './CommentsAdd'
-import { getCurrentUser } from '../store/auth'
+import { getAuthToken, getCurrentUser } from '../store/auth'
 import DeleteCommentDialog from './DeleteCommentDialog'
-import { Comment, deleteComment, editComment } from '../store/comments'
-import { useAppDispatch } from '../store/hooks'
+import {
+  Comment, commentVoteDecrease, commentVoteIncrease, deleteComment, updateComment,
+} from '../store/comments'
+import { useAppDispatch, useAppSelector } from '../store/hooks'
 
 interface CommentsItemProps {
   item: Comment,
-  isMain?: boolean
+  isChild?: boolean
 }
 
 function CommentsItem({
   item,
-  isMain,
+  isChild,
 }: CommentsItemProps) {
   const {
     modificationDate,
-    id = '',
+    _id = '',
     user,
     description,
+    vote,
+    parent,
   } = item
 
   const dispatch = useAppDispatch()
-  const currentUser = useSelector(getCurrentUser)
+  const currentUser = useAppSelector(getCurrentUser)
+  const token = useAppSelector(getAuthToken)
   const [enableReply, setEnableReply] = useState(false)
   const [enableEdit, setEnableEdit] = useState(false)
   const [descriptionValue, setDescriptionValue] = useState(description)
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
 
-  const isOwn = user?.id && (currentUser?.id === user?.id)
+  const commentUser = user
+  const isOwn = commentUser?._id && (currentUser?._id === commentUser._id)
 
   const handleDelete = () => {
-    dispatch(deleteComment(id))
+    dispatch(deleteComment(_id))
     setShowDeleteDialog(false)
   }
 
   const handleEdit = () => {
-    dispatch(editComment({ id, description: descriptionValue }))
+    dispatch(updateComment({ _id, description: descriptionValue, modificationDate }))
     setEnableEdit(false)
+  }
+
+  const handleVoteIncrease = () => {
+    dispatch(commentVoteIncrease(_id))
+  }
+
+  const handleVoteDecrease = () => {
+    dispatch(commentVoteDecrease(_id))
   }
 
   return (
@@ -51,9 +65,9 @@ function CommentsItem({
         <Col sm="auto">
           <Badge className="bg-secondary px-1 py-0">
             <Stack>
-              {!isOwn && <Button variant="secondary p-1">+</Button>}
-              <div className="p-1">{0}</div>
-              {!isOwn && <Button variant="secondary p-1">-</Button>}
+              {!isOwn && <Button variant="secondary p-1" onClick={handleVoteIncrease}>+</Button>}
+              <div className="p-1">{vote}</div>
+              {!isOwn && <Button variant="secondary p-1" onClick={handleVoteDecrease}>-</Button>}
             </Stack>
           </Badge>
         </Col>
@@ -61,7 +75,7 @@ function CommentsItem({
           <Row>
             <Col>
               <span>
-                {user?.name}
+                {commentUser?.name}
               </span>
               {isOwn && <Badge className="m-2">You</Badge>}
               {modificationDate && (
@@ -81,7 +95,7 @@ function CommentsItem({
                   </Button>
                 </>
               )}
-              {!isOwn && isMain && (
+              {!isOwn && token && (
                 <Button variant="link" onClick={() => setEnableReply((prev) => !prev)}>
                   Reply
                 </Button>
@@ -105,7 +119,11 @@ function CommentsItem({
         </Col>
       </Row>
       {!isOwn && enableReply && (
-        <CommentsAdd parent={id} onClose={() => setEnableReply(false)} />
+        <CommentsAdd
+          userLabel={commentUser?.name}
+          parent={isChild ? parent : _id}
+          onClose={() => setEnableReply(false)}
+        />
       )}
       <DeleteCommentDialog
         show={showDeleteDialog}
