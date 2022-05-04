@@ -1,11 +1,10 @@
 import { getCachedToken } from './localStorage'
 
-const UrlApi = 'http://localhost:3001/'
+const UrlApi = 'https://db-comments.herokuapp.com/'
 
 const convertParamsToQuery = (params: Record<string, string>) => Object.entries(params).map(([key, value]) => `${key}=${value}`).join('&')
 
 export default {
-  urlApi: 'http://localhost:3001/',
   requestAPI: async (
     method: string,
     apiRoute: string,
