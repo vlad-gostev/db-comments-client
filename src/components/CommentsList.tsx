@@ -9,9 +9,12 @@ import CommentsItem from './CommentsItem'
 import { fetchComments, getCommentsList } from '../store/comments'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 import CommentsAdd from './CommentsAdd'
+import { getAuthToken } from '../store/auth'
 
 function CommentsList() {
   const dispatch = useAppDispatch()
+
+  const token = useAppSelector(getAuthToken)
   const comments = useAppSelector(getCommentsList)
 
   useEffect(() => {
@@ -39,7 +42,7 @@ function CommentsList() {
           )}
         </div>
       ))}
-      <CommentsAdd />
+      {token && <CommentsAdd />}
     </Stack>
   )
 }
